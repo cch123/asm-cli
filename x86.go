@@ -1,8 +1,21 @@
 package main
 
-import uc "github.com/unicorn-engine/unicorn/bindings/go/unicorn"
+import (
+	"fmt"
+	"io"
 
-var machineX86 machine
+	uc "github.com/unicorn-engine/unicorn/bindings/go/unicorn"
+)
+
+type machineX86 struct{}
+
+var sortedX86RegNames = []string{
+	"eax", "ebx", "ecx", "edx",
+	"esi", "edi",
+	"eip", "ebp", "esp",
+	"eflags",
+	"cs", "ss", "ds", "es", "fs", "gs",
+}
 
 var regMapX86 = map[string]int{
 	// 通用寄存器
@@ -24,7 +37,24 @@ var regMapX86 = map[string]int{
 	"fs":     uc.X86_REG_FS,
 	"gs":     uc.X86_REG_GS,
 }
+var muX86 uc.Unicorn
 
-func registerX86() {
-	machineMap[keyX86] = machineX86
+func initX86() {
+	machine := machineX86{}
+	machineMap[keyX86] = machine
+	muX86, _ = uc.NewUnicorn(uc.ARCH_X86, uc.MODE_32)
+}
+
+func (m machineX86) setOutput(out io.Writer) {
+}
+
+func (m machineX86) displayRegisters() {
+	for _, regName := range sortedX86RegNames {
+		reg := regMapX86[regName]
+		res, _ := muX86.RegRead(reg)
+		fmt.Printf("read from %v : %v\n", regName, res)
+	}
+}
+
+func (m machineX86) execute() {
 }

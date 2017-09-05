@@ -1,8 +1,20 @@
 package main
 
-import uc "github.com/unicorn-engine/unicorn/bindings/go/unicorn"
+import (
+	"fmt"
+	"io"
 
-var machine8086 machine
+	uc "github.com/unicorn-engine/unicorn/bindings/go/unicorn"
+)
+
+type machine8086 struct{}
+
+var sorted8086RegNames = []string{
+	"ax", "bx", "cx", "dx",
+	"ip", "bp", "sp",
+	"flags",
+	"cs", "ss", "ds", "es", "fs", "gs",
+}
 
 var regMap8086 = map[string]int{
 	"ax": uc.X86_REG_AX,
@@ -22,6 +34,24 @@ var regMap8086 = map[string]int{
 	"gs":    uc.X86_REG_GS,
 }
 
-func register8086() {
-	machineMap[key8086] = machine8086
+var mu8086 uc.Unicorn
+
+func init8086() {
+	m := machine8086{}
+	machineMap[key8086] = m
+	mu8086, _ = uc.NewUnicorn(uc.ARCH_X86, uc.MODE_16)
+}
+
+func (m machine8086) setOutput(out io.Writer) {
+}
+
+func (m machine8086) displayRegisters() {
+	for _, regName := range sortedX64RegNames {
+		reg := regMap8086[regName]
+		res, _ := mu8086.RegRead(reg)
+		fmt.Printf("read from %v : %v\n", regName, res)
+	}
+}
+
+func (m machine8086) execute() {
 }

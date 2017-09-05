@@ -21,9 +21,9 @@ type machine interface {
 }
 
 func init() {
-	registerX86()
+	initX86()
 	initX64()
-	register8086()
+	init8086()
 }
 
 func main() {
@@ -33,6 +33,7 @@ func main() {
 		fmt.Println("wrong key")
 		os.Exit(1)
 	}
+	ma.displayRegisters()
 
 	fmt.Println(ma)
 
