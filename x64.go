@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io"
+	"os/exec"
 
 	uc "github.com/unicorn-engine/unicorn/bindings/go/unicorn"
 )
@@ -84,4 +85,13 @@ func (m machineX64) displayStack() {
 }
 
 func (m machineX64) execute() {
+	asmStr := "mov rax,0x1234123412341234"
+	var args = []string{
+		"-a", "x86", asmStr,
+	}
+	res, err := exec.Command("rasm2", args...).Output()
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(string(res))
 }

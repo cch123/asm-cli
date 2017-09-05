@@ -38,4 +38,5 @@ func main() {
 
 	ma.displayRegisters()
 	ma.displayStack()
+	ma.execute()
 }
