@@ -10,10 +10,14 @@ import (
 type machineX64 struct{}
 
 var sortedX64RegNames = []string{
-	"rax", "rbx", "rcx", "rdx", "rsi", "rdi",
-	"r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15",
-	"rip", "rbp", "rsp", "flags",
-	"cs", "ss", "ds", "es", "fs", "gs",
+	"rax", "rbx", "rcx", "rdx", "end",
+	"rsi", "rdi", "r8", "r9", "end",
+	"r10", "r11", "r12", "r13", "end",
+	"r14", "r15", "end",
+	"rip", "rbp", "rsp", "end",
+	"cs", "ss", "ds", "es", "end",
+	"fs", "gs", "end",
+	"flags", "end",
 }
 
 var regMapX64 = map[string]int{
@@ -56,11 +60,27 @@ func (m machineX64) setOutput(out io.Writer) {
 }
 
 func (m machineX64) displayRegisters() {
+	startLine := "----------------- cpu context -----------------"
+	fmt.Println(cyan(startLine))
 	for _, regName := range sortedX64RegNames {
+		if regName == "end" {
+			fmt.Println()
+			continue
+		}
+
 		reg := regMapX64[regName]
 		res, _ := muX64.RegRead(reg)
-		fmt.Printf("read from %v : %v\n", regName, res)
+		res = 1002300000
+		resStr := fmt.Sprintf("%0#[1]*[2]x", 16, res)
+		regName = fillSpace(regName, 3)
+		fmt.Printf("%v : %v ", purple(regName), resStr)
 	}
+
+}
+
+func (m machineX64) displayStack() {
+	startLine := "----------------- stack context -----------------"
+	fmt.Println(yellow(startLine))
 }
 
 func (m machineX64) execute() {

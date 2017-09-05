@@ -55,3 +55,8 @@ func (m machine8086) displayRegisters() {
 
 func (m machine8086) execute() {
 }
+
+func (m machine8086) displayStack() {
+	startLine := "----------------- stack context -----------------"
+	fmt.Println(yellow(startLine))
+}

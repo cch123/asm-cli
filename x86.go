@@ -10,11 +10,12 @@ import (
 type machineX86 struct{}
 
 var sortedX86RegNames = []string{
-	"eax", "ebx", "ecx", "edx",
-	"esi", "edi",
-	"eip", "ebp", "esp",
-	"eflags",
-	"cs", "ss", "ds", "es", "fs", "gs",
+	"eax", "ebx", "ecx", "edx", "end",
+	"esi", "edi", "end",
+	"eip", "ebp", "esp", "end",
+	"eflags", "end",
+	"cs", "ss", "ds", "es", "end",
+	"fs", "gs", "end",
 }
 
 var regMapX86 = map[string]int{
@@ -50,11 +51,24 @@ func (m machineX86) setOutput(out io.Writer) {
 
 func (m machineX86) displayRegisters() {
 	for _, regName := range sortedX86RegNames {
+		if regName == "end" {
+			fmt.Println()
+			continue
+		}
+
 		reg := regMapX86[regName]
 		res, _ := muX86.RegRead(reg)
-		fmt.Printf("read from %v : %v\n", regName, res)
+		res = 1002300000
+		resStr := fmt.Sprintf("%0#[1]*[2]x", 8, res)
+		regName = fillSpace(regName, 3)
+		fmt.Printf("%v : %v ", purple(regName), resStr)
 	}
 }
 
 func (m machineX86) execute() {
+}
+
+func (m machineX86) displayStack() {
+	startLine := "----------------- stack context -----------------"
+	fmt.Println(yellow(startLine))
 }

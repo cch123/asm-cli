@@ -16,6 +16,7 @@ var machineMap = map[string]machine{}
 
 type machine interface {
 	displayRegisters()
+	displayStack()
 	setOutput(io.Writer)
 	execute()
 }
@@ -27,14 +28,14 @@ func init() {
 }
 
 func main() {
-	machineName := keyX86
+	machineName := keyX64
+	//machineName := keyX86
 	ma, ok := machineMap[machineName]
 	if !ok {
 		fmt.Println("wrong key")
 		os.Exit(1)
 	}
+
 	ma.displayRegisters()
-
-	fmt.Println(ma)
-
+	ma.displayStack()
 }
