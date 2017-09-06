@@ -98,7 +98,7 @@ func (m machineX64) execute(cmd string) error {
 	}
 
 	resStr := strings.Trim(string(res), "\n")
-	fmt.Println("hex of the machine code is", resStr)
+	fmt.Printf("opcode: %v\thex: %v\n", cmd, resStr)
 	helperInfo()
 	code, _ := hex.DecodeString(resStr)
 

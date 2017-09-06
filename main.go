@@ -53,16 +53,3 @@ func main() {
 	}
 
 }
-
-func completer(d prompt.Document) []prompt.Suggest {
-	s := []prompt.Suggest{
-		{Text: "MOV", Description: "MOV a, b, a/b can be registers or [reg] or [0x1432]"},
-		{Text: "PUSH", Description: "PUSH reg_name"},
-		{Text: "POP", Description: "POP reg_name"},
-	}
-	return prompt.FilterHasPrefix(s, d.GetWordBeforeCursor(), true)
-}
-
-func helperInfo() {
-	fmt.Println("detailed info can be referred at http://mathemainzel.info/files/x86asmref.html")
-}

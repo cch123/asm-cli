@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	"strconv"
+
+	prompt "github.com/c-bata/go-prompt"
 )
 
 func fillSpace(str string, needLen int) string {
@@ -15,14 +16,19 @@ func fillSpace(str string, needLen int) string {
 	return res
 }
 
-// merge two byte to one
-func mergeBytes(input []byte) []byte {
-	var res = []byte{}
-	// the last is change line ?
-	for i := 0; i < len(input)-1; i += 2 {
-		num, _ := strconv.ParseInt(string(input[i:i+2]), 16, 32)
-		res = append(res, byte(num))
+func completer(d prompt.Document) []prompt.Suggest {
+	s := []prompt.Suggest{
+		{Text: "MOV", Description: "MOV dest, src"},
+		{Text: "PUSH", Description: "PUSH src"},
+		{Text: "POP", Description: "POP dest"},
+		{Text: "ADD", Description: "ADD dest,src"},
+		{Text: "SUB", Description: "SUB dest,src"},
+		{Text: "INC", Description: "INC dest"},
+		{Text: "DEC", Description: "DEC dest"},
 	}
-	fmt.Println(res)
-	return res
+	return prompt.FilterHasPrefix(s, d.GetWordBeforeCursor(), true)
+}
+
+func helperInfo() {
+	fmt.Println("detailed info can be referred at http://mathemainzel.info/files/x86asmref.html")
 }
