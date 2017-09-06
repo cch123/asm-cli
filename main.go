@@ -62,3 +62,7 @@ func completer(d prompt.Document) []prompt.Suggest {
 	}
 	return prompt.FilterHasPrefix(s, d.GetWordBeforeCursor(), true)
 }
+
+func helperInfo() {
+	fmt.Println("detailed info can be referred at http://mathemainzel.info/files/x86asmref.html")
+}
