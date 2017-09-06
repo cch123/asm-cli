@@ -56,9 +56,9 @@ func main() {
 
 func completer(d prompt.Document) []prompt.Suggest {
 	s := []prompt.Suggest{
-		{Text: "users", Description: "Store the username and age"},
-		{Text: "articles", Description: "Store the article text posted by user"},
-		{Text: "comments", Description: "Store the text commented to articles"},
+		{Text: "MOV", Description: "MOV a, b, a/b can be registers or [reg] or [0x1432]"},
+		{Text: "PUSH", Description: "PUSH reg_name"},
+		{Text: "POP", Description: "POP reg_name"},
 	}
 	return prompt.FilterHasPrefix(s, d.GetWordBeforeCursor(), true)
 }
