@@ -1,9 +1,11 @@
 package main
 
 import (
+	"encoding/hex"
 	"fmt"
 	"io"
 	"os/exec"
+	"strings"
 
 	uc "github.com/unicorn-engine/unicorn/bindings/go/unicorn"
 )
@@ -55,6 +57,8 @@ func initX64() {
 	m := machineX64{}
 	machineMap[keyX64] = m
 	muX64, _ = uc.NewUnicorn(uc.ARCH_X86, uc.MODE_64)
+	muX64.RegWrite(uc.X86_REG_RSP, 0x1200)
+	muX64.RegWrite(uc.X86_REG_RBP, 0x1800)
 }
 
 func (m machineX64) setOutput(out io.Writer) {
@@ -92,11 +96,15 @@ func (m machineX64) execute(cmd string) error {
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println(string(res))
 
-	// FIXME
-	code := mergeBytes(res)
-	//code := []byte{184, 210, 4, 0, 0}
+	resStr := strings.Trim(string(res), "\n")
+	fmt.Println("hex of the machine code is", resStr)
+	code, _ := hex.DecodeString(resStr)
+
+	// NOTICE
+	// push/pop rax commands must ensure that
+	// the rbp and rsp point into the range of memmap
+	// and addr of rbp > rsp
 	muX64.MemMap(0x1000, 0x1000)
 	muX64.MemWrite(0x1000, code)
 	if err := muX64.Start(0x1000, 0x1000+uint64(len(code))); err != nil {
