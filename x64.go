@@ -52,6 +52,7 @@ var regMapX64 = map[string]int{
 	"gs":    uc.X86_REG_GS,
 }
 var muX64 uc.Unicorn
+var beforeExecRegVals = map[string]uint64{}
 
 func initX64() {
 	m := machineX64{}
@@ -75,10 +76,16 @@ func (m machineX64) displayRegisters() {
 
 		reg := regMapX64[regName]
 		res, _ := muX64.RegRead(reg)
-		//res = 1002300000
+
 		resStr := fmt.Sprintf("%0#[1]*[2]x", 16, res)
-		regName = fillSpace(regName, 3)
-		fmt.Printf("%v : %v ", purple(regName), resStr)
+		beforeVal, ok := beforeExecRegVals[regName]
+		paddedRegName := fillSpace(regName, 3)
+		if ok && beforeVal != res {
+			fmt.Printf("%v : %v ", purple(paddedRegName), red(resStr))
+		} else {
+			fmt.Printf("%v : %v ", purple(paddedRegName), resStr)
+		}
+		beforeExecRegVals[regName] = res
 	}
 
 }
@@ -98,7 +105,7 @@ func (m machineX64) execute(cmd string) error {
 	}
 
 	resStr := strings.Trim(string(res), "\n")
-	fmt.Printf("opcode: %v\thex: %v\n", cmd, resStr)
+	fmt.Printf("%v: %v\t%v: %v\n", purple("opcode"), cmd, purple("hex"), resStr)
 	helperInfo()
 	code, _ := hex.DecodeString(resStr)
 
@@ -109,7 +116,7 @@ func (m machineX64) execute(cmd string) error {
 	muX64.MemMap(0x1000, 0x1000)
 	muX64.MemWrite(0x1000, code)
 	if err := muX64.Start(0x1000, 0x1000+uint64(len(code))); err != nil {
-		panic(err)
+		fmt.Println(red(fmt.Sprintf("err : %v", err)))
 	}
 	return err
 }
