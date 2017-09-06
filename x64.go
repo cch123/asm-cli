@@ -71,7 +71,7 @@ func (m machineX64) displayRegisters() {
 
 		reg := regMapX64[regName]
 		res, _ := muX64.RegRead(reg)
-		res = 1002300000
+		//res = 1002300000
 		resStr := fmt.Sprintf("%0#[1]*[2]x", 16, res)
 		regName = fillSpace(regName, 3)
 		fmt.Printf("%v : %v ", purple(regName), resStr)
@@ -84,14 +84,23 @@ func (m machineX64) displayStack() {
 	fmt.Println(yellow(startLine))
 }
 
-func (m machineX64) execute() {
-	asmStr := "mov rax,0x1234123412341234"
+func (m machineX64) execute(cmd string) error {
 	var args = []string{
-		"-a", "x86", asmStr,
+		"-a", "x86", cmd,
 	}
 	res, err := exec.Command("rasm2", args...).Output()
 	if err != nil {
 		fmt.Println(err)
 	}
 	fmt.Println(string(res))
+
+	// FIXME
+	code := mergeBytes(res)
+	//code := []byte{184, 210, 4, 0, 0}
+	muX64.MemMap(0x1000, 0x1000)
+	muX64.MemWrite(0x1000, code)
+	if err := muX64.Start(0x1000, 0x1000+uint64(len(code))); err != nil {
+		panic(err)
+	}
+	return err
 }

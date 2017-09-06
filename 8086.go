@@ -53,7 +53,8 @@ func (m machine8086) displayRegisters() {
 	}
 }
 
-func (m machine8086) execute() {
+func (m machine8086) execute(cmd string) error {
+	return nil
 }
 
 func (m machine8086) displayStack() {

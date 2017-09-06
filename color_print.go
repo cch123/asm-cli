@@ -26,7 +26,7 @@ func cyan(str interface{}) string {
 	return fmt.Sprintf("\033[96m%v\033[00m", str)
 }
 
-func lightGrey(str interface{}) string {
+func lightGray(str interface{}) string {
 	return fmt.Sprintf("\033[97m%v\033[00m", str)
 }
 
@@ -42,12 +42,6 @@ func boldYellow(str interface{}) string {
 	return fmt.Sprintf("\033[93m\033[1m%v\033[00m", str)
 }
 
-/*
-
-# change output color
-def lightPurple(s,e="\n") : print("\033[94m%v\033[00m".format(s), end=e)
-def cyan(s,e="\n"): print("\033[96m%v\033[00m".format(s), end=e)
-def lightGray(s,e="\n"): print("\033[97m%v\033[00m".format(s), end=e)
-def black(s,e="\n"): print("\033[98m%v\033[00m".format(s), end=e)
-def white(s,e="\n"): print("\033[00m", end=e)
-*/
+func black(str interface{}) string {
+	return fmt.Sprintf("\033[98m%v\033[00m", str)
+}

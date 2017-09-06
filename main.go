@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"io"
 	"os"
+
+	"github.com/c-bata/go-prompt"
 )
 
 const (
@@ -18,7 +20,7 @@ type machine interface {
 	displayRegisters()
 	displayStack()
 	setOutput(io.Writer)
-	execute()
+	execute(string) error
 }
 
 func init() {
@@ -38,5 +40,25 @@ func main() {
 
 	ma.displayRegisters()
 	ma.displayStack()
-	ma.execute()
+
+	for {
+		fmt.Println("Input q to quit.")
+		t := prompt.Input("> ", completer)
+		if t == "q" || t == "quit" {
+			break
+		}
+		ma.execute(t)
+		ma.displayRegisters()
+		ma.displayStack()
+	}
+
+}
+
+func completer(d prompt.Document) []prompt.Suggest {
+	s := []prompt.Suggest{
+		{Text: "users", Description: "Store the username and age"},
+		{Text: "articles", Description: "Store the article text posted by user"},
+		{Text: "comments", Description: "Store the text commented to articles"},
+	}
+	return prompt.FilterHasPrefix(s, d.GetWordBeforeCursor(), true)
 }
