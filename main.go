@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io"
 	"os"
 
 	"github.com/c-bata/go-prompt"
@@ -20,7 +19,6 @@ var machineMap = map[string]machine{}
 type machine interface {
 	displayRegisters()
 	displayStack()
-	setOutput(io.Writer)
 	execute(string) error
 }
 

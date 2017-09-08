@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/hex"
 	"fmt"
-	"io"
 	"os/exec"
 	"strings"
 
@@ -46,9 +45,6 @@ func init8086() {
 	mu8086.RegWrite(uc.X86_REG_SP, 0x01300000)
 	mu8086.RegWrite(uc.X86_REG_BP, 0x10000000)
 	mu8086.MemMap(0x0000, 0x20000000)
-}
-
-func (m machine8086) setOutput(out io.Writer) {
 }
 
 func (m machine8086) displayRegisters() {

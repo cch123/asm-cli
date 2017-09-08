@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/hex"
 	"fmt"
-	"io"
 	"os/exec"
 	"strings"
 
@@ -61,9 +60,6 @@ func initX64() {
 	muX64.RegWrite(uc.X86_REG_RSP, 0x01300000)
 	muX64.RegWrite(uc.X86_REG_RBP, 0x10000000)
 	muX64.MemMap(0x0000, 0x20000000)
-}
-
-func (m machineX64) setOutput(out io.Writer) {
 }
 
 func (m machineX64) displayRegisters() {
