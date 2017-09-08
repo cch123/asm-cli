@@ -1,6 +1,10 @@
 Overview
 ----------------
-ASM shell based on unicorn, currently only support x86 and x64 arch, will support 8086 in the near future
+ASM shell based on unicorn
+
+Currently only support x86 and x64 arch
+
+8086 support will be added in the near future
 
 Dependency
 ----------------
