@@ -2,9 +2,7 @@ Overview
 ----------------
 ASM shell based on unicorn
 
-Currently only support x86 and x64 arch
-
-8086 support will be added in the near future
+Currently only support x86 and x64 arch, Because rasm2 only support 32/64 bits
 
 Dependency
 ----------------

@@ -1,5 +1,10 @@
 package main
 
+/*
+  rasm2 seems doesn't support 8086 asm
+  so this feature will be delayed
+*/
+
 import (
 	"encoding/hex"
 	"fmt"
@@ -42,9 +47,9 @@ func init8086() {
 	m := machine8086{}
 	machineMap[key8086] = m
 	mu8086, _ = uc.NewUnicorn(uc.ARCH_X86, uc.MODE_16)
-	mu8086.RegWrite(uc.X86_REG_SP, 0x01300000)
-	mu8086.RegWrite(uc.X86_REG_BP, 0x10000000)
-	mu8086.MemMap(0x0000, 0x20000000)
+	mu8086.RegWrite(uc.X86_REG_SP, 0x1000)
+	mu8086.RegWrite(uc.X86_REG_BP, 0xffff)
+	mu8086.MemMap(0x0000, 0xffff)
 }
 
 func (m machine8086) displayRegisters() {
@@ -100,7 +105,7 @@ func (m machine8086) displayStack() {
 	startLine := "----------------- stack context -----------------"
 	fmt.Println(yellow(startLine))
 	// need 4 column, 5 line
-	readStartAddr := uint64(0x012ffff0)
+	readStartAddr := uint64(0x992)
 	byteSize := 2
 	readOffset := uint64(byteSize * 4 * 5)
 	bytesData, err := mu8086.MemRead(readStartAddr, readOffset)
