@@ -61,7 +61,7 @@ func main() {
 		// FIXME when input ctrl+c/ctrl+z/ctrl+d
 		// prompt will become very slow
 		t := prompt.Input(machineName+"> ", completer)
-		if t == "q" || t == "quit" {
+		if t == "q" || t == "quit" || t == "exit" {
 			break
 		}
 		ma.execute(t)
