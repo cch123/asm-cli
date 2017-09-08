@@ -58,8 +58,9 @@ func initX64() {
 	m := machineX64{}
 	machineMap[keyX64] = m
 	muX64, _ = uc.NewUnicorn(uc.ARCH_X86, uc.MODE_64)
-	muX64.RegWrite(uc.X86_REG_RSP, 0x1200)
-	muX64.RegWrite(uc.X86_REG_RBP, 0x1800)
+	muX64.RegWrite(uc.X86_REG_RSP, 0x01300000)
+	muX64.RegWrite(uc.X86_REG_RBP, 0x10000000)
+	muX64.MemMap(0x0000, 0x20000000)
 }
 
 func (m machineX64) setOutput(out io.Writer) {
@@ -93,6 +94,40 @@ func (m machineX64) displayRegisters() {
 func (m machineX64) displayStack() {
 	startLine := "----------------- stack context -----------------"
 	fmt.Println(yellow(startLine))
+	// 64 bit = 8 bytes
+	// need 4 column, 5 line
+	readStartAddr := uint64(0x012fffc0)
+	readOffset := uint64(8 * 4 * 5)
+	bytesData, err := muX64.MemRead(readStartAddr, readOffset)
+	if err != nil {
+	}
+	rspVal, _ := muX64.RegRead(uc.X86_REG_RSP)
+
+	for i := 0; i < len(bytesData); i += 8 {
+		if i%32 == 0 && i != 0 {
+			fmt.Println()
+		}
+
+		// the first line didn't change line
+		if i%32 == 0 {
+			fmt.Printf("%0#[1]*[2]x : ", 16, readStartAddr+uint64(i))
+		}
+
+		var reversedBytes = bytesData[i : i+8]
+		for i := 0; i <= 3; i++ {
+			j := 7 - i
+			reversedBytes[i], reversedBytes[j] = reversedBytes[j], reversedBytes[i]
+		}
+
+		currentAddr := readStartAddr + uint64(i)
+		if rspVal == currentAddr {
+			fmt.Printf("%s ", red(hex.EncodeToString(reversedBytes[0:])))
+		} else {
+			fmt.Printf("%s ", hex.EncodeToString(reversedBytes[0:]))
+		}
+	}
+	fmt.Println()
+
 }
 
 func (m machineX64) execute(cmd string) error {
@@ -111,11 +146,9 @@ func (m machineX64) execute(cmd string) error {
 
 	// NOTICE
 	// push/pop rax commands must ensure that
-	// the rbp and rsp point into the range of memmap
-	// and addr of rbp > rsp
-	muX64.MemMap(0x1000, 0x1000)
-	muX64.MemWrite(0x1000, code)
-	if err := muX64.Start(0x1000, 0x1000+uint64(len(code))); err != nil {
+	// the rsp point into the range of memmap
+	muX64.MemWrite(0x0000, code)
+	if err := muX64.Start(0x0000, 0x0000+uint64(len(code))); err != nil {
 		fmt.Println(red(fmt.Sprintf("err : %v", err)))
 	}
 	return err

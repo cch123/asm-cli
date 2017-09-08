@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"io"
 	"os"
@@ -30,8 +31,22 @@ func init() {
 }
 
 func main() {
-	machineName := keyX64
+	//machineName := keyX64
 	//machineName := keyX86
+	var arch = flag.String("a", "x86", "x86/x64/8086")
+	flag.Parse()
+	var machineName string
+	switch *arch {
+	case keyX86:
+		fallthrough
+	case keyX64:
+		fallthrough
+	case key8086:
+		machineName = *arch
+
+	default:
+		fmt.Println("invalid arch type")
+	}
 	ma, ok := machineMap[machineName]
 	if !ok {
 		fmt.Println("wrong key")
@@ -43,7 +58,7 @@ func main() {
 
 	for {
 		fmt.Println("Input q to quit.")
-		t := prompt.Input("> ", completer)
+		t := prompt.Input(machineName+"> ", completer)
 		if t == "q" || t == "quit" {
 			break
 		}
