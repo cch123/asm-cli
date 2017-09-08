@@ -30,10 +30,12 @@ func init() {
 	init8086()
 }
 
+var ma machine
+
 func main() {
 	//machineName := keyX64
 	//machineName := keyX86
-	var arch = flag.String("a", "x86", "x86/x64/8086")
+	var arch = flag.String("a", "x64", "x86/x64/8086")
 	flag.Parse()
 	var machineName string
 	switch *arch {
@@ -43,11 +45,11 @@ func main() {
 		fallthrough
 	case key8086:
 		machineName = *arch
-
 	default:
 		fmt.Println("invalid arch type")
 	}
-	ma, ok := machineMap[machineName]
+	var ok bool
+	ma, ok = machineMap[machineName]
 	if !ok {
 		fmt.Println("wrong key")
 		os.Exit(1)
@@ -56,17 +58,16 @@ func main() {
 	ma.displayRegisters()
 	ma.displayStack()
 
-	for {
-		fmt.Println("Input q to quit.")
-		// FIXME when input ctrl+c/ctrl+z/ctrl+d
-		// prompt will become very slow
-		t := prompt.Input(machineName+"> ", completer)
-		if t == "q" || t == "quit" || t == "exit" {
-			break
-		}
-		ma.execute(t)
-		ma.displayRegisters()
-		ma.displayStack()
-	}
+	p := prompt.New(myExecutor, completer, prompt.OptionPrefix(machineName+">> "))
+	p.Run()
 
+}
+
+func myExecutor(cmd string) {
+	if cmd == "quit" || cmd == "exit" || cmd == "q" {
+		os.Exit(0)
+	}
+	ma.execute(cmd)
+	ma.displayRegisters()
+	ma.displayStack()
 }
