@@ -22,12 +22,6 @@ type machine interface {
 	execute(string) error
 }
 
-func init() {
-	initX86()
-	initX64()
-	init8086()
-}
-
 var ma machine
 
 func main() {
@@ -35,30 +29,34 @@ func main() {
 	//machineName := keyX86
 	var arch = flag.String("a", "x64", "x86/x64/8086")
 	flag.Parse()
-	var machineName string
-	switch *arch {
-	case keyX86:
-		fallthrough
-	case keyX64:
-		fallthrough
-	case key8086:
-		machineName = *arch
-	default:
-		fmt.Println("invalid arch type")
-	}
-	var ok bool
-	ma, ok = machineMap[machineName]
-	if !ok {
-		fmt.Println("wrong key")
-		os.Exit(1)
+	ma = getMachine(*arch)
+	if ma == nil {
+		fmt.Println("unsupported arch, please use x86 or x64")
+		os.Exit(0)
 	}
 
 	ma.displayRegisters()
 	ma.displayStack()
 
-	p := prompt.New(myExecutor, completer, prompt.OptionPrefix(machineName+">> "))
+	p := prompt.New(myExecutor, completer, prompt.OptionPrefix(*arch+">> "))
 	p.Run()
 
+}
+
+func getMachine(arch string) machine {
+	var ma machine
+	switch arch {
+	case keyX86:
+		ma = initX86()
+	case keyX64:
+		ma = initX64()
+	case key8086:
+		fallthrough
+	default:
+		fmt.Println("invalid arch type")
+		return nil
+	}
+	return ma
 }
 
 func myExecutor(cmd string) {
