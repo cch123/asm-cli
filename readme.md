@@ -2,7 +2,21 @@ Overview
 ----------------
 ASM shell based on unicorn
 
-Currently only support x86 and x64 arch, Because rasm2 only support 32/64 bits
+Currently only support x86 and x64 arch,
+
+Because rasm2 only support 32/64 bits opcode to machine code conversion
+
+Releases
+---------------
+https://github.com/cch123/asm-cli/releases
+
+Snapshots
+----------------
+X64 mode :
+![x64](imgs/x64.png)
+
+X86 mode :
+![x86](imgs/x86.png)
 
 Dependency
 ----------------
