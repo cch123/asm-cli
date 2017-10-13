@@ -13,7 +13,7 @@ https://github.com/cch123/asm-cli/releases
 Snapshots
 ----------------
 X64 mode :
-![x64](imgs/x64.png)
+![x64](imgs/x64-new.png)
 
 X86 mode :
 ![x86](imgs/x86.png)
