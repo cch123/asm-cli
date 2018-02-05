@@ -42,4 +42,5 @@ Build
 Run
 ----------------
 ./8086 -a x86   #32bit mode
+
 ./8086 -a x64   #64bit mode (default, even on x86)
