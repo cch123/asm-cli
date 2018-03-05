@@ -30,5 +30,5 @@ func completer(d prompt.Document) []prompt.Suggest {
 }
 
 func helperInfo() {
-	fmt.Println("detailed info can be referred at http://mathemainzel.info/files/x86asmref.html")
+	fmt.Println("detailed info can be referred at http://ref.x86asm.net/")
 }
