@@ -2,10 +2,10 @@ package main
 
 import (
 	"encoding/hex"
+	"errors"
 	"fmt"
-	"os/exec"
-	"strings"
 
+	"github.com/keystone-engine/keystone/bindings/go/keystone"
 	uc "github.com/unicorn-engine/unicorn/bindings/go/unicorn"
 )
 
@@ -115,26 +115,47 @@ func (m basicMachine) displayStack() {
 
 }
 
-func (m basicMachine) execute(cmd string) error {
-	var args = []string{
-		"-a", "x86", cmd,
+/*
+func assemble(mnemonic string) ([]byte, error) {
+	// TODO: What is the effect of the second argument(address) of Assemble
+	code, cnt, ok := keystone.Assemble(mnemonic, 0)
+	if !ok || cnt == 0 {
+		return nil, fmt.Errorf("Error: assemble instruction(%s)", mnemonic)
 	}
-	res, err := exec.Command("rasm2", args...).Output()
-	if err != nil {
-		fmt.Println(err)
+	return code, nil
+}
+*/
+
+func (m basicMachine) execute(cmd string) error {
+	/*
+		var args = []string{
+			"-a", "x86", cmd,
+		}
+		res, err := exec.Command("rasm2", args...).Output()
+		if err != nil {
+			fmt.Println(err)
+		}
+	*/
+
+	ks, _ := keystone.New(keystone.ARCH_X86, keystone.MODE_64)
+	ks.Option(keystone.OPT_SYNTAX, keystone.OPT_SYNTAX_INTEL)
+	res, cnt, ok := ks.Assemble(cmd, 0)
+
+	if !ok || cnt == 0 {
+		return errors.New("assemble failed")
 	}
 
-	resStr := strings.Trim(string(res), "\n")
-	fmt.Printf("%v: %v\t%v: %v\n", purple("opcode"), cmd, purple("hex"), resStr)
+	//resStr := strings.Trim(string(res), "\n")
+	fmt.Printf("%v: %v\t%v: %v\n", purple("opcode"), cmd, purple("hex"), res)
 	helperInfo()
-	code, _ := hex.DecodeString(resStr)
+	//code, _ := hex.DecodeString(resStr)
 
 	// NOTICE
 	// push/pop rax commands must ensure that
 	// the rsp point into the range of memmap
-	m.mu.MemWrite(0x0000, code)
-	if err := m.mu.Start(0x0000, 0x0000+uint64(len(code))); err != nil {
+	m.mu.MemWrite(0x0000, res)
+	if err := m.mu.Start(0x0000, 0x0000+uint64(len(res))); err != nil {
 		fmt.Println(red(fmt.Sprintf("err : %v", err)))
 	}
-	return err
+	return nil
 }
