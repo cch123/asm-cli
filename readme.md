@@ -4,7 +4,6 @@ ASM shell based on unicorn
 
 Currently only support x86 and x64 arch,
 
-Because rasm2 only support 32/64 bits opcode to machine code conversion
 
 Releases
 ---------------
@@ -20,14 +19,14 @@ X86 mode :
 
 Dependency
 ----------------
-1. rasm2 in radare2
+1. keystone-engine/keystone
 2. unicorn-engine/unicorn
 3. golang (https://golang.org/doc/install)
 3. that's all!
 
 Build From Source
 ----------------
-1. install radare2
+1. install keystone(https://github.com/keystone-engine/keystone)
 2. install unicorn (https://github.com/unicorn-engine/unicorn)
 3. install golang (https://golang.org/doc/install)
 4. build this project
