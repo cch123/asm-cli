@@ -146,7 +146,7 @@ func (m basicMachine) execute(cmd string) error {
 	}
 
 	//resStr := strings.Trim(string(res), "\n")
-	fmt.Printf("%v: %v\t%v: %v\n", purple("opcode"), cmd, purple("hex"), res)
+	fmt.Printf("%v: %v\t%v: %v\n", purple("mnemonic"), cmd, purple("bytes"), res)
 	helperInfo()
 	//code, _ := hex.DecodeString(resStr)
 
